@@ -1,0 +1,12 @@
+[workspace]
+members = ["projects/*"]
+default-members = [
+    "projects/mosaic-rs",
+]
+exclude = [
+    "projects/.DS_Store",
+    "projects/mosaic-wolfram",
+]
+
+[profile.release]
+lto = true
