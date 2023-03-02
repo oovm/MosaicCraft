@@ -3,7 +3,7 @@ use image::Rgba;
 pub use crate::error::{MosaicError, MosaicResult};
 
 mod renderer;
-mod signature;
+mod storage;
 mod error;
 
 #[derive(Debug, Copy, Clone)]
