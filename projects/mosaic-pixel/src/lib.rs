@@ -14,7 +14,7 @@ pub enum ColorSampler {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub enum GridShape {
+pub enum MosaicPixel {
     DiskMatrix,
     DiamondMatrix,
     BoxMatrix,
@@ -24,10 +24,10 @@ pub enum GridShape {
     Custom(),
 }
 
-pub struct Mosaic {
+pub struct MosaicRenderer {
     // Color sampler for every grid
     pub sampler: ColorSampler,
-    pub shape: GridShape,
+    pub shape: MosaicPixel,
     pub background: Option<Rgba<f32>>,
     pub grayscale: bool,
     pub smooth: bool,
@@ -41,13 +41,13 @@ impl Default for ColorSampler {
     }
 }
 
-impl Default for GridShape {
+impl Default for MosaicPixel {
     fn default() -> Self {
         Self::DiskMatrix
     }
 }
 
-impl Default for Mosaic {
+impl Default for MosaicRenderer {
     fn default() -> Self {
         Self {
             sampler: Default::default(),

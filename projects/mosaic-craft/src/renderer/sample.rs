@@ -1,7 +1,7 @@
 use super::*;
 use crate::ColorSampler;
 
-impl Mosaic {
+impl MosaicRenderer {
     pub fn sample(&self) {
         match self.sampler {
             ColorSampler::CenterPixel => self.sample_center_pixel(),

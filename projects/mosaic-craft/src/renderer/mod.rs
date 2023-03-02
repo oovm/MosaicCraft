@@ -1,9 +1,9 @@
 mod sample;
 mod shape;
-use crate::Mosaic;
+use crate::MosaicRenderer;
 use image::Rgba;
 
-impl Mosaic {
+impl MosaicRenderer {
     // https://mathematica.stackexchange.com/questions/106165/reproduce-image-effect-in-mathematica
     pub fn render(&self) {
         if self.grayscale {
