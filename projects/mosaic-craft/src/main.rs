@@ -1,63 +1,82 @@
-use iced::widget::{checkbox, column, container};
-use iced::{Element, Font, Length, Sandbox, Settings};
+use iced::{Application, Command, Settings, Theme};
+use iced::widget::{column, Column};
+use iced::widget::*;
 
-const ICON_FONT: Font = Font::External {
-    name: "Icons",
-    bytes: include_bytes!("../fonts/icons.ttf"),
-};
-
-pub fn main() -> iced::Result {
-    Example::run(Settings::default())
-}
-
-#[derive(Default)]
-struct Example {
-    default_checkbox: bool,
-    custom_checkbox: bool,
+struct MosaicCraft {
+    // The counter value
+    value: i32,
 }
 
 #[derive(Debug, Clone, Copy)]
-enum Message {
-    DefaultChecked(bool),
-    CustomChecked(bool),
+pub enum Message {
+    IncrementPressed,
+    DecrementPressed,
 }
 
-impl Sandbox for Example {
-    type Message = Message;
+impl MosaicCraft {
+    pub fn view(&self) -> Column<Message> {
+        let image = Image::new("resources/ferris.png");
 
-    fn new() -> Self {
-        Default::default()
+        // We use a column: a simple vertical layout
+        column![
+            // The increment button. We tell it to produce an
+            // `IncrementPressed` message when pressed
+            button("+").on_press(Message::IncrementPressed),
+            image,
+
+            // We show the value of the counter here
+            text(self.value).size(50),
+
+            // The decrement button. We tell it to produce a
+            // `DecrementPressed` message when pressed
+            button("-").on_press(Message::DecrementPressed),
+        ]
+    }
+}
+
+impl MosaicCraft {
+    // ...
+    pub fn update(&mut self, message: Message) {
+        match message {
+            Message::IncrementPressed => {
+                self.value += 1;
+            }
+            Message::DecrementPressed => {
+                self.value -= 1;
+            }
+        }
+    }
+}
+
+impl Application for MosaicCraft {
+    type Executor = iced::executor::Default;
+    type Message = Message;
+    type Theme = Theme;
+    type Flags = ();
+
+    fn new(_flags: ()) -> (MosaicCraft, Command<Message>) {
+        (
+            MosaicCraft { value: 0 },
+            Command::none(),
+        )
     }
 
     fn title(&self) -> String {
-        String::from("Checkbox - Iced")
+        String::from("Counter - Iced")
     }
 
-    fn update(&mut self, message: Message) {
-        match message {
-            Message::DefaultChecked(value) => self.default_checkbox = value,
-            Message::CustomChecked(value) => self.custom_checkbox = value,
-        }
+    fn update(&mut self, message: Message) -> Command<Message> {
+        self.update(message);
+
+        Command::none()
     }
 
-    fn view(&self) -> Element<Message> {
-        let default_checkbox =
-            checkbox("Default", self.default_checkbox, Message::DefaultChecked);
-        let custom_checkbox =
-            checkbox("Custom", self.custom_checkbox, Message::CustomChecked)
-                .icon(checkbox::Icon {
-                    font: ICON_FONT,
-                    code_point: '\u{e901}',
-                    size: None,
-                });
-
-        let content = column![default_checkbox, custom_checkbox].spacing(22);
-
-        container(content)
-            .width(Length::Fill)
-            .height(Length::Fill)
-            .center_x()
-            .center_y()
-            .into()
+    fn view(&self) -> iced::Element<Message> {
+        self.view().into()
     }
+}
+
+
+fn main() {
+    MosaicCraft::run(Settings::default()).unwrap()
 }

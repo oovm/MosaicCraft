@@ -1,6 +1,10 @@
 use image::Rgba;
 
+pub use crate::error::{MosaicError, MosaicResult};
+
 mod renderer;
+mod signature;
+mod error;
 
 #[derive(Debug, Copy, Clone)]
 pub enum ColorSampler {

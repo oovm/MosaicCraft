@@ -6,10 +6,15 @@ description = "..."
 repository = "..."
 readme = "Readme.md"
 license = "MPL-2.0"
-edition = "2018"
+edition = "2021"
+
 
 [dependencies]
-iced = "0.8.0"
+
+
+[dependencies.iced]
+version = "0.8.0"
+features = ["image", "svg", "wgpu", "default_system_font"]
 
 [dev-dependencies]
 
