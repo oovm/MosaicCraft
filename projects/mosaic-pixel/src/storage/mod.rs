@@ -1,28 +1,24 @@
 use std::fs::metadata;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
-use image::Rgb;
 use palette_extract::{get_palette_with_options, MaxColors, PixelEncoding, PixelFilter, Quality};
-use serde::{Deserialize, Serialize};
-use sled_typed::DiskMap;
+use serde_derive::{Deserialize, Serialize};
+use sled::Db;
 
 use crate::MosaicResult;
 
 pub mod signature;
+mod workspace;
 
 
 pub struct ImageStorage {
-    store: DiskMap<KeyColor, ImageSignature>,
+    workspace: PathBuf,
+    database: Db,
 }
 
-impl ImageStorage {
-    pub fn new<P: AsRef<Path>>(dir: P) -> Self {
-        todo!()
-    }
-}
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub struct KeyColor {
     r: u8,
     g: u8,
@@ -36,5 +32,5 @@ pub struct ImageSignature {
     pub height: u32,
     pub last_modified: SystemTime,
     pub main_color: KeyColor,
-    pub buffer: Vec<u8>
+    pub buffer: Vec<u8>,
 }
