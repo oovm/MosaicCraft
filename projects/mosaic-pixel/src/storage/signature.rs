@@ -3,7 +3,7 @@ use core::slice::SlicePattern;
 use image::DynamicImage;
 use image::io::Reader;
 
-use crate::MosaicError;
+use crate::{KeyColor, MosaicError};
 
 use super::*;
 
@@ -52,11 +52,7 @@ pub fn find_main_color(image: &DynamicImage) -> MosaicResult<KeyColor> {
     );
     match color_palette.first() {
         Some(s) => {
-            Ok(KeyColor {
-                r: s.r,
-                g: s.g,
-                b: s.b,
-            })
+            Ok(KeyColor::new(s.r, s.g, s.b))
         }
         None => {
             MosaicError::io_error("No main color found")

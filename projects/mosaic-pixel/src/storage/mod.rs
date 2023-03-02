@@ -3,27 +3,29 @@ use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
 use palette_extract::{get_palette_with_options, MaxColors, PixelEncoding, PixelFilter, Quality};
-use serde_derive::{Deserialize, Serialize};
-use sled::Db;
+use sled::{Db, Tree};
 
+use serde_derive::{Deserialize, Serialize};
+use std::fs::create_dir_all;
+
+use image::RgbaImage;
+use crate::KeyColor;
 use crate::MosaicResult;
 
 pub mod signature;
 mod workspace;
 
 
-pub struct ImageStorage {
+pub struct WorkspaceStorage {
     workspace: PathBuf,
     database: Db,
 }
 
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Serialize, Deserialize)]
-pub struct KeyColor {
-    r: u8,
-    g: u8,
-    b: u8,
+#[derive(Clone, Debug)]
+pub struct GalleryStorage {
+    database: Tree,
 }
+
 
 #[derive(Serialize, Deserialize)]
 pub struct ImageSignature {

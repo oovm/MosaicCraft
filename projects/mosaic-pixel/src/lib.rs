@@ -4,12 +4,14 @@
 use image::Rgba;
 
 pub use crate::error::{MosaicError, MosaicResult};
-pub use crate::storage::{ImageStorage, KeyColor};
-pub use crate::storage::ImageSignature;
+pub use crate::storage::{WorkspaceStorage, };
+pub use crate::storage::{ImageSignature, GalleryStorage};
+pub use crate::color::KeyColor;
 
 mod renderer;
 mod storage;
 mod error;
+mod color;
 
 #[derive(Debug, Copy, Clone)]
 pub enum ColorSampler {
