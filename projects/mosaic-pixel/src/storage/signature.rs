@@ -2,10 +2,19 @@ use core::slice::SlicePattern;
 
 use image::DynamicImage;
 use image::io::Reader;
+use sled::IVec;
 
 use crate::{KeyColor, MosaicError};
 
 use super::*;
+
+impl TryFrom<IVec> for ImageSignature {
+    type Error = MosaicError;
+
+    fn try_from(value: IVec) -> Result<Self, Self::Error> {
+        todo!()
+    }
+}
 
 impl ImageSignature {
     pub fn new<P: AsRef<Path>>(path: P) -> MosaicResult<Self> {

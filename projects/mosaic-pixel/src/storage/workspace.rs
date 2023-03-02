@@ -1,4 +1,4 @@
-
+use crate::MosaicError;
 
 use super::*;
 
@@ -7,13 +7,15 @@ impl WorkspaceStorage {
         let path = directory.as_ref();
         new_storage(path).map_err(|e| e.with_path(path))
     }
-    pub fn get_closest_color(&self, color: &KeyColor) -> &ImageSignature {
+    pub fn get_closest_color(&self, color: KeyColor) -> &ImageSignature {
         todo!()
     }
     pub fn get_gallery(&self, name: &str) -> MosaicResult<GalleryStorage> {
-        Ok(GalleryStorage {
+        let mut store = GalleryStorage {
             database: self.database.open_tree(name.as_bytes())?,
-        })
+        };
+        store.set_name(name);
+        Ok(store)
     }
     pub fn pack_gallery<P: AsRef<Path>>(&self, name: &str, path: P) -> MosaicResult<()> {
         let tree = self.database.open_tree(name.as_bytes())?;
@@ -28,15 +30,22 @@ impl WorkspaceStorage {
 }
 
 impl GalleryStorage {
-    pub fn get_closest_color(&self, color: &KeyColor) -> KeyColor {
+    pub fn get_closest_color(&self, color: KeyColor) -> KeyColor {
         let mut closest = KeyColor::default();
-        let mut distance = u16::MAX;
+        let mut distance = u32::MAX;
         for item in self.database.iter() {
             match item {
                 Ok((key, _)) => {
-                    key.to_vec()
+                    let key = KeyColor::from(key);
+                    let this = color ^ key;
+                    if this < distance {
+                        distance = this;
+                        closest = key;
+                    }
                 }
-                Err(_) => {}
+                Err(e) => {
+                    log::error!("Error while iterating over gallery: {}", e);
+                }
             }
         }
         closest
@@ -44,22 +53,32 @@ impl GalleryStorage {
     pub fn count(&self) -> usize {
         self.database.len()
     }
-    pub fn get_image(&self, color: &KeyColor) -> MosaicResult<RgbaImage> {
+    pub fn get_image(&self, color: KeyColor) -> MosaicResult<RgbaImage> {
         match self.database.get(color.as_bytes())? {
             Some(s) => {
-                // let sig: ImageSignature;
-                // match RgbaImage::from_raw(&sig.width, &sig.height, &sig.buffer) {
-                //     Some(s) => {}
-                //     None => {}
-                // }
-                //
-                // Ok(&sig.buffer)
-                todo!()
+                let sig = ImageSignature::try_from(s)?;
+                match RgbaImage::from_raw(sig.width, sig.height, sig.buffer) {
+                    Some(s) => { Ok(s) }
+                    None => {
+                        todo!()
+                    }
+                }
             }
             None => {
-                todo!()
+                MosaicError::runtime_error(format!("No image with main color `{:X}` in gallery `{}`", color, self.get_name()))
             }
         }
+    }
+    pub fn get_name(&self) -> String {
+        match self.database.get("$name") {
+            Ok(Some(s)) => unsafe {
+                String::from_utf8_unchecked(s.to_vec())
+            }
+            _ => "<anonymous>".to_string()
+        }
+    }
+    pub fn set_name(&self, name: &str) {
+        self.database.insert("$name", name.as_bytes()).ok();
     }
 }
 

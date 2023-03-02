@@ -19,6 +19,8 @@ pub enum MosaicError {
     },
 }
 
+impl Error for MosaicError {}
+
 impl Display for MosaicError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -32,4 +34,10 @@ impl Display for MosaicError {
     }
 }
 
-impl Error for MosaicError {}
+impl MosaicError {
+    pub fn runtime_error<T, S: Into<String>>(message: S) -> MosaicResult<T> {
+        Err(MosaicError::RuntimeError {
+            message: message.into(),
+        })
+    }
+}
