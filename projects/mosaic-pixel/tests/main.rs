@@ -1,4 +1,3 @@
-use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage};
 
 #[test]
 fn test() {

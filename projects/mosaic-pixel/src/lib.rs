@@ -1,6 +1,11 @@
+#![feature(slice_pattern)]
+
+
 use image::Rgba;
 
 pub use crate::error::{MosaicError, MosaicResult};
+pub use crate::storage::{ImageStorage, KeyColor};
+pub use crate::storage::ImageSignature;
 
 mod renderer;
 mod storage;
@@ -9,11 +14,8 @@ mod error;
 #[derive(Debug, Copy, Clone)]
 pub enum ColorSampler {
     CenterPixel,
-    /// Average of all colors
     Average,
-    // rgbaster.js
     Dominant,
-    // Vibrant.js
     Vibrant,
 }
 
