@@ -1,17 +1,17 @@
 #![feature(slice_pattern)]
 
-
 use image::Rgba;
 
-pub use crate::error::{MosaicError, MosaicResult};
-pub use crate::storage::{WorkspaceStorage, };
-pub use crate::storage::{ImageSignature, GalleryStorage};
-pub use crate::color::KeyColor;
+pub use crate::{
+    color::KeyColor,
+    error::{MosaicError, MosaicResult},
+    storage::{GalleryStorage, ImageSignature, StorageManager},
+};
 
+mod color;
+mod error;
 mod renderer;
 mod storage;
-mod error;
-mod color;
 
 #[derive(Debug, Copy, Clone)]
 pub enum ColorSampler {

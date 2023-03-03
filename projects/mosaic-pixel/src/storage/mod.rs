@@ -1,6 +1,8 @@
-use std::fs::metadata;
-use std::path::{Path, PathBuf};
-use std::time::SystemTime;
+use std::{
+    fs::metadata,
+    path::{Path, PathBuf},
+    time::SystemTime,
+};
 
 use palette_extract::{get_palette_with_options, MaxColors, PixelEncoding, PixelFilter, Quality};
 use sled::{Db, Tree};
@@ -8,15 +10,13 @@ use sled::{Db, Tree};
 use serde_derive::{Deserialize, Serialize};
 use std::fs::create_dir_all;
 
+use crate::{KeyColor, MosaicResult};
 use image::RgbaImage;
-use crate::KeyColor;
-use crate::MosaicResult;
 
 pub mod signature;
 mod workspace;
 
-
-pub struct WorkspaceStorage {
+pub struct StorageManager {
     workspace: PathBuf,
     database: Db,
 }
@@ -25,7 +25,6 @@ pub struct WorkspaceStorage {
 pub struct GalleryStorage {
     database: Tree,
 }
-
 
 #[derive(Serialize, Deserialize)]
 pub struct ImageSignature {
